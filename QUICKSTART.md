@@ -11,32 +11,7 @@
 
 ## Installation
 
-### 1. Install DuckDB
-
-```bash
-# Via pip (recommended)
-pip install duckdb
-
-# Verify installation
-python -c "import duckdb; print(duckdb.__version__)"
-
-# Or download CLI from duckdb.org
-```
-
-### 2. Install Python (if needed)
-
-```bash
-# Check Python version
-python --version  # Should be 3.8+
-
-# Install if needed (macOS)
-brew install python
-
-# Ubuntu/Debian
-sudo apt install python3 python3-pip
-```
-
-### 3. Clone or Download This Repository
+### 1. Clone or Download This Repository
 
 ```bash
 cd ~/Code
@@ -44,9 +19,76 @@ git clone <your-repo-url>
 cd 30-days-sql-data-ai
 ```
 
+### 2. Create Python Virtual Environment
+
+**Why use a virtual environment?**
+- Keeps dependencies isolated from your system Python
+- Prevents version conflicts
+- Makes the project portable
+
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate it (macOS/Linux)
+source venv/bin/activate
+
+# Activate it (Windows)
+venv\Scripts\activate
+
+# Your prompt should now show (venv)
+```
+
+### 3. Install Dependencies
+
+```bash
+# Install all required packages
+pip install -r requirements.txt
+
+# This installs:
+# - duckdb (database engine)
+# - pandas (data manipulation)
+# - faker (sample data generation)
+# - jupyter (optional, for notebooks)
+# - matplotlib (optional, for visualizations)
+```
+
+### 4. Verify Installation
+
+```bash
+# Check DuckDB is installed
+python -c "import duckdb; print(f'DuckDB {duckdb.__version__} installed!')"
+
+# Or run the test script
+python tools/test_setup.py
+```
+
+### 5. Deactivate Virtual Environment (when done)
+
+```bash
+# To exit the virtual environment
+deactivate
+```
+
+**Important:** Always activate the virtual environment before working:
+```bash
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+```
+
 ---
 
 ## Daily Workflow
+
+### Step 0: Activate Virtual Environment
+
+**Always do this first!**
+
+```bash
+# From the project root
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+```
 
 ### Step 1: Setup Database (2 min)
 
