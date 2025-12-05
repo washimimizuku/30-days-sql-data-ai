@@ -111,11 +111,20 @@ cat README.md  # or open in your editor
 # Edit exercise.sql
 code exercise.sql  # or use any text editor
 
-# Test your queries
-duckdb day01.db < exercise.sql
+# Test your queries using Python's DuckDB
+python -c "import duckdb; conn = duckdb.connect('day01.db'); conn.execute(open('exercise.sql').read())"
 
-# Or use interactive mode
-duckdb day01.db
+# Or use interactive Python shell
+python
+>>> import duckdb
+>>> conn = duckdb.connect('day01.db')
+>>> conn.execute("SELECT * FROM employees").fetchall()
+>>> exit()
+```
+
+**Note:** If you have the DuckDB CLI installed separately, you can also use:
+```bash
+duckdb day01.db < exercise.sql
 ```
 
 ### Step 4: Check Solution (5 min)
@@ -124,8 +133,8 @@ duckdb day01.db
 # Compare with solution
 cat solution.sql
 
-# Run solution
-duckdb day01.db < solution.sql
+# Run solution using Python's DuckDB
+python -c "import duckdb; conn = duckdb.connect('day01.db'); conn.execute(open('solution.sql').read())"
 ```
 
 ### Step 5: Take Quiz (5 min)
@@ -163,7 +172,47 @@ cat quiz.md
 
 ## DuckDB Basics
 
-### Interactive Mode
+### Interactive Mode (Python)
+
+```bash
+# Open Python with DuckDB
+python
+
+# In Python shell:
+>>> import duckdb
+>>> conn = duckdb.connect('day01.db')
+>>> 
+>>> # Run queries interactively
+>>> conn.execute("SELECT * FROM employees").fetchall()
+>>> 
+>>> # Or use fetchdf() for pandas DataFrame
+>>> conn.execute("SELECT * FROM employees").fetchdf()
+>>> 
+>>> # Close connection
+>>> conn.close()
+>>> exit()
+```
+
+### Run SQL File (Python)
+
+```bash
+# Method 1: Use the provided helper script (easiest!)
+python run_sql.py day01.db exercise.sql
+
+# Method 2: One-liner
+python -c "import duckdb; conn = duckdb.connect('day01.db'); conn.execute(open('exercise.sql').read())"
+
+# Method 3: Interactive Python
+python
+>>> import duckdb
+>>> conn = duckdb.connect('day01.db')
+>>> conn.execute(open('exercise.sql').read())
+>>> exit()
+```
+
+### Using DuckDB CLI (Optional)
+
+If you have the standalone DuckDB CLI installed:
 
 ```bash
 # Open database
@@ -174,38 +223,41 @@ SELECT * FROM employees;
 
 # Exit
 .quit
-```
 
-### Run SQL File
-
-```bash
-# Execute all queries in file
+# Run SQL file
 duckdb day01.db < exercise.sql
-
-# With output to file
-duckdb day01.db < exercise.sql > results.txt
 ```
 
-### Useful Commands
+### Useful Commands (Python)
 
-```sql
--- Show all tables
-SHOW TABLES;
+```python
+import duckdb
 
--- Describe table structure
-DESCRIBE employees;
+conn = duckdb.connect('day01.db')
 
--- Show table schema
-PRAGMA table_info('employees');
+# Show all tables
+conn.execute("SHOW TABLES").fetchall()
 
--- Export to CSV
-COPY (SELECT * FROM employees) TO 'output.csv' (HEADER, DELIMITER ',');
+# Describe table structure
+conn.execute("DESCRIBE employees").fetchall()
 
--- Read CSV
-SELECT * FROM read_csv_auto('data.csv');
+# Show table schema
+conn.execute("PRAGMA table_info('employees')").fetchall()
 
--- Read Parquet
-SELECT * FROM read_parquet('data.parquet');
+# Export to CSV
+conn.execute("COPY (SELECT * FROM employees) TO 'output.csv' (HEADER, DELIMITER ',')")
+
+# Read CSV
+conn.execute("SELECT * FROM read_csv_auto('data.csv')").fetchall()
+
+# Read Parquet
+conn.execute("SELECT * FROM read_parquet('data.parquet')").fetchall()
+
+# Get results as pandas DataFrame
+df = conn.execute("SELECT * FROM employees").fetchdf()
+print(df.head())
+
+conn.close()
 ```
 
 ---
@@ -281,23 +333,53 @@ SELECT * FROM large_table LIMIT 10;
 
 ## Common Commands
 
-### Database Operations
+### Database Operations (Python)
 
 ```bash
-# Create new database
-duckdb mydata.db
-
-# Open existing database
-duckdb day01.db
+# Create/open database and run queries
+python -c "import duckdb; conn = duckdb.connect('mydata.db'); conn.execute('CREATE TABLE test (id INT, name VARCHAR)'); conn.close()"
 
 # Run SQL file
-duckdb day01.db < queries.sql
+python -c "import duckdb; conn = duckdb.connect('day01.db'); conn.execute(open('queries.sql').read())"
 
-# Export results
-duckdb day01.db -c "SELECT * FROM employees" > output.csv
+# Export results to CSV
+python -c "import duckdb; conn = duckdb.connect('day01.db'); conn.execute('COPY (SELECT * FROM employees) TO \"output.csv\" (HEADER, DELIMITER \",\")')"
+
+# Quick query and print results
+python -c "import duckdb; conn = duckdb.connect('day01.db'); print(conn.execute('SELECT * FROM employees').fetchall())"
 ```
 
-### DuckDB CLI Commands
+### Python Interactive Commands
+
+```python
+import duckdb
+
+# Connect to database
+conn = duckdb.connect('day01.db')
+
+# Show tables
+conn.execute("SHOW TABLES").fetchall()
+
+# Show schema
+conn.execute("DESCRIBE employees").fetchall()
+
+# Get results as list
+results = conn.execute("SELECT * FROM employees").fetchall()
+
+# Get results as pandas DataFrame
+df = conn.execute("SELECT * FROM employees").fetchdf()
+
+# Execute multiple statements
+conn.execute("""
+    CREATE TABLE test (id INT);
+    INSERT INTO test VALUES (1), (2), (3);
+""")
+
+# Close connection
+conn.close()
+```
+
+### DuckDB CLI Commands (if installed separately)
 
 ```sql
 -- Show help
@@ -322,20 +404,33 @@ duckdb day01.db -c "SELECT * FROM employees" > output.csv
 
 ## Troubleshooting
 
-### "duckdb: command not found"
+### "No module named 'duckdb'"
 
+Make sure you've activated the virtual environment:
 ```bash
-# Install via pip
-pip install duckdb
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
 
-# Or download from duckdb.org
+# Then verify installation
+python -c "import duckdb; print(duckdb.__version__)"
 ```
 
 ### "Table does not exist"
 
-Run the setup script first:
+Run the setup script first (with venv activated):
 ```bash
 python setup.py
+```
+
+### Virtual environment not activated
+
+If you see errors, check your prompt for `(venv)`:
+```bash
+# Should see: (venv) user@machine:~/path$
+
+# If not, activate it:
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
 ```
 
 ### "Syntax error"
@@ -452,9 +547,64 @@ FROM employees;
 ## Ready to Start?
 
 ```bash
+# 1. Activate virtual environment
+source venv/bin/activate  # macOS/Linux
+# venv\Scripts\activate   # Windows
+
+# 2. Navigate to Day 1
 cd days/day-01-setup-select-basics
+
+# 3. Run setup script
 python setup.py
-duckdb day01.db
+
+# 4. Start querying with Python
+python
+>>> import duckdb
+>>> conn = duckdb.connect('day01.db')
+>>> conn.execute("SELECT * FROM employees").fetchall()
 ```
 
 **Let's master SQL! 📊**
+
+---
+
+## Quick Reference Card
+
+### Every Day Workflow
+
+```bash
+# 1. Activate venv (if not already active)
+source venv/bin/activate
+
+# 2. Go to day folder
+cd days/day-XX-topic
+
+# 3. Run setup
+python setup.py
+
+# 4. Work on exercises
+# Edit exercise.sql, then test:
+python ../../run_sql.py dayXX.db exercise.sql
+
+# 5. Check solution
+python ../../run_sql.py dayXX.db solution.sql
+```
+
+### Quick Python DuckDB Commands
+
+```python
+import duckdb
+conn = duckdb.connect('database.db')
+
+# Query and get results
+conn.execute("SELECT * FROM table").fetchall()
+
+# Query and get DataFrame
+conn.execute("SELECT * FROM table").fetchdf()
+
+# Run SQL file
+conn.execute(open('file.sql').read())
+
+# Close
+conn.close()
+```
