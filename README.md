@@ -13,8 +13,8 @@ A focused 30-day program (1 hour/day) to master SQL for data engineering and ana
 
 **What's Included**:
 - 📚 30 comprehensive lessons
-- 💻 200+ hands-on SQL queries
-- ✅ 150+ quiz questions
+- 💻 247 hands-on SQL exercises
+- ✅ 405 quiz questions (27 quizzes × 15 questions)
 - 🎯 3 major projects (Days 10, 20, 30)
 - 📊 Real-world data engineering scenarios
 
@@ -271,11 +271,11 @@ After completing this bootcamp:
 ## 📊 Bootcamp Statistics
 
 - **30 days** of structured content
-- **150 files** (5 per day)
-- **200+ SQL queries** to practice
-- **150+ quiz questions** for self-assessment
+- **150 files** (5 per day: README, setup.py, exercise.sql, solution.sql, quiz.md)
+- **247 SQL exercises** to practice
+- **405 quiz questions** for self-assessment (27 quizzes)
 - **3 major projects** (sales analysis, data warehouse, analytics database)
-- **~12,000+ lines** of SQL and documentation
+- **35,000+ lines** of SQL, Python, and documentation
 
 ---
 
