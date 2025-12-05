@@ -1,13 +1,329 @@
--- Day 30: Final Project
--- Complete data analysis
+-- Day 30: Capstone Project - Complete Analytics Database
+-- This project tests ALL skills from Days 1-29
 
--- Exercise 1: Final Project
--- TODO: Write your query
+-- ============================================
+-- Part 1: Business Intelligence Queries (30 min)
+-- ============================================
+
+-- Challenge 1: Sales Performance Dashboard
+-- TODO: Create a comprehensive sales dashboard
+
+-- 1.1: Calculate key metrics
+-- TODO: Total revenue, total orders, average order value, total customers
+-- Expected: Single row with 4 metrics
 
 
--- Exercise 2: Practice
--- TODO: Write your query
+-- 1.2: Revenue by category
+-- TODO: Show revenue, orders, and average order value by category
+-- Expected columns: category_name, revenue, order_count, avg_order_value
+-- Order by revenue descending
 
 
--- Exercise 3: Challenge
--- TODO: Write your query
+-- 1.3: Top 10 customers by total spend
+-- TODO: Show customer name, email, total spent, order count
+-- Expected: Top 10 customers
+-- Order by total spent descending
+
+
+-- 1.4: Monthly sales trends for 2023
+-- TODO: Show month, revenue, orders, average order value
+-- Expected: 12 rows (one per month)
+-- Order by month
+
+
+-- 1.5: Best performing stores
+-- TODO: Show store name, city, region, revenue, order count
+-- Expected: All stores ordered by revenue descending
+
+
+-- Challenge 2: Customer Analytics
+-- TODO: Analyze customer behavior and segments
+
+-- 2.1: Customer segmentation analysis
+-- TODO: Count customers and average lifetime value by segment
+-- Expected columns: customer_segment, customer_count, avg_lifetime_value
+
+
+-- 2.2: Customer lifetime value distribution
+-- TODO: Create value tiers (High: >$2000, Medium: $500-2000, Low: <$500)
+-- Use CASE statement
+-- Expected columns: value_tier, customer_count, total_revenue
+
+
+-- 2.3: Repeat purchase rate
+-- TODO: Calculate percentage of customers with more than one order
+-- Expected: Single row with repeat_customer_count, total_customers, repeat_rate_pct
+
+
+-- 2.4: Customer acquisition by month
+-- TODO: Count new customers by registration month
+-- Expected columns: registration_month, new_customers
+-- Order by month
+
+
+-- 2.5: Inactive customers
+-- TODO: Find customers with no purchase in last 180 days
+-- Expected columns: customer_name, email, last_purchase_date, days_since_purchase
+
+
+-- Challenge 3: Product Analytics
+-- TODO: Understand product performance
+
+-- 3.1: Best-selling products by revenue
+-- TODO: Show product name, category, revenue, quantity sold
+-- Expected: Top 20 products by revenue
+
+
+-- 3.2: Products with low stock
+-- TODO: Find products where stock_quantity < reorder_level
+-- Expected columns: product_name, category, stock_quantity, reorder_level, shortage
+
+
+-- 3.3: Average rating by category
+-- TODO: Calculate average rating and review count by category
+-- Expected columns: category_name, avg_rating, review_count
+
+
+-- 3.4: Products with no reviews
+-- TODO: Find active products that have never been reviewed
+-- Expected columns: product_name, category, price
+
+
+-- 3.5: Price vs rating correlation
+-- TODO: Create price tiers and show average rating per tier
+-- Price tiers: Budget (<$50), Mid ($50-200), Premium (>$200)
+-- Expected columns: price_tier, product_count, avg_rating
+
+
+-- ============================================
+-- Part 2: Advanced Analytics (30 min)
+-- ============================================
+
+-- Challenge 4: Time-Series Analysis
+-- TODO: Perform temporal analysis
+
+-- 4.1: Year-over-year growth
+-- TODO: Compare 2023 vs 2024 revenue (if data exists)
+-- Expected columns: year, revenue, yoy_growth_pct
+
+
+-- 4.2: Month-over-month trends
+-- TODO: Calculate monthly revenue with month-over-month change
+-- Use LAG() window function
+-- Expected columns: month, revenue, prev_month_revenue, mom_change_pct
+
+
+-- 4.3: Seasonal patterns
+-- TODO: Calculate average revenue by month across all years
+-- Expected columns: month_name, avg_monthly_revenue
+
+
+-- 4.4: Day-of-week analysis
+-- TODO: Calculate revenue by day of week
+-- Use DAYNAME() or similar function
+-- Expected columns: day_of_week, order_count, total_revenue, avg_order_value
+
+
+-- 4.5: Moving averages
+-- TODO: Calculate 7-day moving average of daily revenue
+-- Use window functions
+-- Expected columns: order_date, daily_revenue, moving_avg_7day
+
+
+-- Challenge 5: Cohort Analysis
+-- TODO: Analyze customer cohorts
+
+-- 5.1: Customers by registration month cohort
+-- TODO: Group customers by registration month, show count and total revenue
+-- Expected columns: cohort_month, customer_count, total_revenue
+
+
+-- 5.2: Retention rates by cohort
+-- TODO: Calculate how many customers from each cohort made purchases in subsequent months
+-- This is advanced - use CTEs and window functions
+
+
+-- 5.3: Revenue by cohort over time
+-- TODO: Show revenue generated by each registration cohort over time
+-- Expected columns: cohort_month, order_month, revenue
+
+
+-- 5.4: Time to second purchase
+-- TODO: Calculate average days between first and second purchase
+-- Use window functions (LAG or LEAD)
+-- Expected: Average days for customers with 2+ orders
+
+
+-- Challenge 6: Employee Performance
+-- TODO: Evaluate employee metrics
+
+-- 6.1: Sales by employee
+-- TODO: Show employee name, position, store, total sales, order count
+-- Expected: All employees ordered by total sales descending
+
+
+-- 6.2: Top performing employees
+-- TODO: Find top 10 employees by revenue
+-- Include their store and manager information
+
+
+-- 6.3: Employee productivity by store
+-- TODO: Calculate average sales per employee by store
+-- Expected columns: store_name, employee_count, total_sales, avg_sales_per_employee
+
+
+-- 6.4: Manager performance comparison
+-- TODO: Compare stores by manager, showing total revenue and employee count
+-- Expected columns: manager_name, store_name, employee_count, total_revenue
+
+
+-- ============================================
+-- Part 3: Complex Business Questions (30 min)
+-- ============================================
+
+-- Challenge 7: Profitability Analysis
+-- TODO: Calculate profit metrics
+
+-- 7.1: Profit margin by category
+-- TODO: Calculate revenue, cost, profit, and profit margin percentage
+-- Join order_items with products
+-- Expected columns: category_name, revenue, cost, profit, profit_margin_pct
+
+
+-- 7.2: Most profitable products
+-- TODO: Show top 20 products by total profit
+-- Expected columns: product_name, category, units_sold, revenue, profit
+
+
+-- 7.3: Profit by store and region
+-- TODO: Calculate profit by store, grouped by region
+-- Expected columns: region, store_name, revenue, profit, profit_margin_pct
+
+
+-- 7.4: Impact of discounts on profitability
+-- TODO: Compare orders with discounts vs without
+-- Expected columns: has_discount, order_count, avg_discount_pct, avg_profit_margin
+
+
+-- Challenge 8: Inventory Management
+-- TODO: Optimize inventory
+
+-- 8.1: Products needing reorder
+-- TODO: List products where stock < reorder_level, ordered by shortage
+-- Expected columns: product_name, category, stock_quantity, reorder_level, shortage_amount
+
+
+-- 8.2: Slow-moving inventory
+-- TODO: Find products with high stock but low sales in last 90 days
+-- Expected columns: product_name, stock_quantity, units_sold_90days
+
+
+-- 8.3: Stock turnover rate
+-- TODO: Calculate inventory turnover (units sold / average stock)
+-- Expected columns: category_name, total_units_sold, avg_stock, turnover_rate
+
+
+-- 8.4: Inventory value by category
+-- TODO: Calculate total inventory value (stock_quantity * cost)
+-- Expected columns: category_name, total_units, inventory_value
+
+
+-- Challenge 9: Customer Segmentation
+-- TODO: Create customer segments
+
+-- 9.1: RFM Analysis (Recency, Frequency, Monetary)
+-- TODO: Calculate RFM scores for each customer
+-- Recency: Days since last purchase
+-- Frequency: Number of orders
+-- Monetary: Total spend
+-- Expected columns: customer_name, recency_days, frequency, monetary_value
+
+
+-- 9.2: High-value customer identification
+-- TODO: Find customers in top 20% by lifetime value
+-- Use PERCENT_RANK() or NTILE()
+-- Expected columns: customer_name, lifetime_value, value_percentile
+
+
+-- 9.3: At-risk customers
+-- TODO: Find high-value customers who haven't purchased in 90+ days
+-- Expected columns: customer_name, lifetime_value, days_since_purchase, last_order_date
+
+
+-- 9.4: Customer personas
+-- TODO: Create customer segments based on:
+--       - Purchase frequency (High/Medium/Low)
+--       - Average order value (High/Medium/Low)
+-- Use CASE statements
+-- Expected columns: persona, customer_count, avg_lifetime_value
+
+
+-- ============================================
+-- Part 4: Executive Summary (20 min)
+-- ============================================
+
+-- Challenge 10: Executive Dashboard
+-- TODO: Create a comprehensive executive summary
+
+-- 10.1: Key Performance Indicators (KPIs)
+-- TODO: Create a single query showing:
+--       - Total revenue (current month vs last month)
+--       - Total orders (current month vs last month)
+--       - Average order value
+--       - Total customers
+--       - Active customers (purchased in last 30 days)
+--       - Customer retention rate
+-- Expected: Single row with all KPIs
+
+
+-- 10.2: Top Performers
+-- TODO: In one query, show:
+--       - Top 3 products by revenue
+--       - Top 3 customers by spend
+--       - Top 3 stores by revenue
+-- Use UNION ALL to combine results
+
+
+-- 10.3: Growth Trends
+-- TODO: Show quarterly growth trends
+-- Expected columns: quarter, revenue, orders, yoy_growth_pct
+
+
+-- 10.4: Areas of Concern
+-- TODO: Identify potential issues:
+--       - Products with low stock
+--       - Stores with declining sales
+--       - High return/cancellation rates
+--       - Inactive high-value customers
+
+
+-- 10.5: Recommendations Query
+-- TODO: Create a query that identifies:
+--       - Products to promote (high rating, good margin)
+--       - Customers to target (high potential, recent activity)
+--       - Inventory to reorder (low stock, high demand)
+
+
+-- ============================================
+-- BONUS: Advanced Challenges
+-- ============================================
+
+-- BONUS 1: Customer Lifetime Value Prediction
+-- TODO: Calculate predicted lifetime value based on first 3 months of activity
+
+
+-- BONUS 2: Product Recommendation Engine
+-- TODO: Find "customers who bought X also bought Y" patterns
+
+
+-- BONUS 3: Churn Prediction
+-- TODO: Identify customers likely to churn based on behavior patterns
+
+
+-- BONUS 4: Store Performance Scorecard
+-- TODO: Create a comprehensive store ranking system with multiple metrics
+
+
+-- BONUS 5: Optimize a Slow Query
+-- TODO: Take one of your complex queries and optimize it
+--       Show EXPLAIN output before and after optimization
