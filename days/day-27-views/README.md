@@ -1,43 +1,61 @@
-# Day 27: Views and Constraints
+# Day 27: Views
 
 ## Learning Objectives
-- Understand views and materialized views
-- Learn CREATE VIEW and view management
-- Master database constraints
-- Learn PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, CHECK, DEFAULT
-- Practice with real queries
-- Build practical SQL skills
+- Understand what views are and why they're useful
+- Master CREATE VIEW and DROP VIEW
+- Learn to simplify complex queries with views
+- Use views for security and data abstraction
+- Practice querying views
 
 ## Theory (15 minutes)
 
-### Part 1: Views
+### What are Views?
 
-#### What are Views?
+A view is a virtual table based on a SQL query. It doesn't store data itself but provides a saved query you can reuse like a table.
 
-A view is a virtual table based on a SQL query. It doesn't store data itself but provides a way to simplify complex queries and control data access.
+**Think of it as:** A saved SELECT query with a name.
 
-**Basic View:**
 ```sql
--- Create a view
-CREATE VIEW active_employees AS
-SELECT id, name, email, department
-FROM employees
-WHERE is_active = TRUE;
+-- Instead of writing this complex query every time:
+SELECT e.name, e.email, d.name as department
+FROM employees e
+JOIN departments d ON e.department_id = d.id
+WHERE e.is_active = TRUE;
 
--- Query the view like a table
+-- Create a view once:
+CREATE VIEW active_employees AS
+SELECT e.name, e.email, d.name as department
+FROM employees e
+JOIN departments d ON e.department_id = d.id
+WHERE e.is_active = TRUE;
+
+-- Then query it simply:
 SELECT * FROM active_employees;
 ```
 
-#### CREATE VIEW
+### Creating Views
 
+**Basic syntax:**
 ```sql
--- Simple view
+CREATE VIEW view_name AS
+SELECT columns
+FROM tables
+WHERE conditions;
+```
+
+**Simple view:**
+```sql
 CREATE VIEW high_earners AS
 SELECT name, salary, department
 FROM employees
 WHERE salary > 100000;
 
--- View with joins
+-- Query it:
+SELECT * FROM high_earners;
+```
+
+**View with JOIN:**
+```sql
 CREATE VIEW employee_details AS
 SELECT 
     e.id,
@@ -48,596 +66,297 @@ SELECT
 FROM employees e
 JOIN departments d ON e.department_id = d.id;
 
--- View with aggregations
+-- Query it:
+SELECT * FROM employee_details WHERE location = 'Seattle';
+```
+
+**View with aggregations:**
+```sql
 CREATE VIEW department_stats AS
 SELECT 
-    department_id,
+    department,
     COUNT(*) as employee_count,
     AVG(salary) as avg_salary,
     MAX(salary) as max_salary
 FROM employees
-GROUP BY department_id;
+GROUP BY department;
+
+-- Query it:
+SELECT * FROM department_stats ORDER BY avg_salary DESC;
 ```
 
-#### CREATE OR REPLACE VIEW
+### CREATE OR REPLACE VIEW
+
+Update an existing view or create a new one:
 
 ```sql
--- Update existing view or create new one
+-- First version
+CREATE VIEW active_employees AS
+SELECT id, name, email
+FROM employees
+WHERE is_active = TRUE;
+
+-- Update it later
 CREATE OR REPLACE VIEW active_employees AS
 SELECT id, name, email, department, hire_date
 FROM employees
 WHERE is_active = TRUE AND hire_date >= '2020-01-01';
 ```
 
-#### DROP VIEW
+### Dropping Views
 
 ```sql
--- Remove a view
+-- Drop a view
 DROP VIEW active_employees;
 
--- Drop if exists
+-- Drop if exists (no error if doesn't exist)
 DROP VIEW IF EXISTS active_employees;
 ```
 
-#### Benefits of Views
+### Why Use Views?
 
-1. **Simplify Complex Queries:**
+**1. Simplify Complex Queries**
+
 ```sql
--- Instead of writing this every time:
-SELECT e.name, d.name as dept, p.name as project
-FROM employees e
-JOIN departments d ON e.department_id = d.id
-JOIN project_assignments pa ON e.id = pa.employee_id
-JOIN projects p ON pa.project_id = p.id;
+-- Complex query with multiple JOINs:
+SELECT 
+    o.id,
+    c.name as customer,
+    p.name as product,
+    oi.quantity,
+    oi.price
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+JOIN order_items oi ON o.id = oi.order_id
+JOIN products p ON oi.product_id = p.id;
 
--- Create a view:
-CREATE VIEW employee_projects AS
-SELECT e.name, d.name as dept, p.name as project
-FROM employees e
-JOIN departments d ON e.department_id = d.id
-JOIN project_assignments pa ON e.id = pa.employee_id
-JOIN projects p ON pa.project_id = p.id;
+-- Create view:
+CREATE VIEW order_details AS
+SELECT 
+    o.id,
+    c.name as customer,
+    p.name as product,
+    oi.quantity,
+    oi.price
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+JOIN order_items oi ON o.id = oi.order_id
+JOIN products p ON oi.product_id = p.id;
 
--- Then simply:
-SELECT * FROM employee_projects;
+-- Now simply:
+SELECT * FROM order_details WHERE customer = 'Alice';
 ```
 
-2. **Security/Access Control:**
+**2. Security and Access Control**
+
+Hide sensitive columns:
+
 ```sql
--- Hide sensitive columns
+-- Full table has sensitive data
+CREATE TABLE employees (
+    id INTEGER,
+    name VARCHAR,
+    email VARCHAR,
+    salary DECIMAL,
+    ssn VARCHAR  -- Sensitive!
+);
+
+-- Create public view without sensitive columns
 CREATE VIEW public_employees AS
-SELECT id, name, department, hire_date
+SELECT id, name, email
 FROM employees;
--- Salary and SSN are hidden
+
+-- Users can query public_employees but not see salary/SSN
 ```
 
-3. **Data Abstraction:**
+**3. Data Abstraction**
+
+Present data in different formats:
+
 ```sql
--- Present data in different format
 CREATE VIEW employee_summary AS
 SELECT 
     id,
-    CONCAT(first_name, ' ', last_name) as full_name,
-    YEAR(CURRENT_DATE) - YEAR(hire_date) as years_employed
+    name || ' (' || email || ')' as contact_info,
+    YEAR(CURRENT_DATE) - YEAR(hire_date) as years_employed,
+    CASE 
+        WHEN salary > 100000 THEN 'High'
+        WHEN salary > 60000 THEN 'Medium'
+        ELSE 'Entry'
+    END as salary_band
 FROM employees;
 ```
 
-### Part 2: Constraints
-
-Constraints enforce rules on data to maintain integrity and validity.
-
-#### PRIMARY KEY
-
-Uniquely identifies each row in a table.
+**4. Reusable Logic**
 
 ```sql
--- Single column primary key
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100)
-);
+-- Create view for frequently used calculation
+CREATE VIEW monthly_sales AS
+SELECT 
+    DATE_TRUNC('month', order_date) as month,
+    COUNT(*) as order_count,
+    SUM(total) as revenue,
+    AVG(total) as avg_order_value
+FROM orders
+GROUP BY DATE_TRUNC('month', order_date);
 
--- Composite primary key
-CREATE TABLE order_items (
-    order_id INTEGER,
-    product_id INTEGER,
-    quantity INTEGER,
-    PRIMARY KEY (order_id, product_id)
-);
-
--- Named constraint
-CREATE TABLE employees (
-    id INTEGER CONSTRAINT pk_employees PRIMARY KEY,
-    name VARCHAR(100)
-);
+-- Use in multiple queries:
+SELECT * FROM monthly_sales WHERE month >= '2024-01-01';
+SELECT * FROM monthly_sales ORDER BY revenue DESC LIMIT 12;
 ```
 
-**Rules:**
-- Must contain unique values
-- Cannot contain NULL
-- Only one PRIMARY KEY per table
-- Automatically creates an index
+### Practical Examples
 
-#### FOREIGN KEY
+**Example 1: Dashboard View**
+```sql
+CREATE VIEW sales_dashboard AS
+SELECT 
+    DATE(order_date) as date,
+    COUNT(*) as orders,
+    SUM(total) as revenue,
+    AVG(total) as avg_order,
+    COUNT(DISTINCT customer_id) as unique_customers
+FROM orders
+GROUP BY DATE(order_date);
 
-Enforces referential integrity between tables.
+-- Query for last 7 days:
+SELECT * FROM sales_dashboard 
+WHERE date >= CURRENT_DATE - INTERVAL '7 days'
+ORDER BY date;
+```
+
+**Example 2: Customer Segmentation**
+```sql
+CREATE VIEW customer_segments AS
+SELECT 
+    customer_id,
+    COUNT(*) as order_count,
+    SUM(total) as lifetime_value,
+    CASE 
+        WHEN SUM(total) > 10000 THEN 'VIP'
+        WHEN SUM(total) > 5000 THEN 'Premium'
+        WHEN SUM(total) > 1000 THEN 'Regular'
+        ELSE 'New'
+    END as segment
+FROM orders
+GROUP BY customer_id;
+
+-- Find VIP customers:
+SELECT * FROM customer_segments WHERE segment = 'VIP';
+```
+
+**Example 3: Product Performance**
+```sql
+CREATE VIEW product_performance AS
+SELECT 
+    p.id,
+    p.product_name,
+    p.category,
+    COUNT(oi.id) as times_ordered,
+    SUM(oi.quantity) as total_quantity,
+    SUM(oi.quantity * oi.price) as total_revenue
+FROM products p
+LEFT JOIN order_items oi ON p.id = oi.product_id
+GROUP BY p.id, p.product_name, p.category;
+
+-- Top products by revenue:
+SELECT * FROM product_performance 
+ORDER BY total_revenue DESC 
+LIMIT 10;
+```
+
+### Querying Views
+
+Views can be queried just like tables:
 
 ```sql
--- Basic foreign key
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100),
-    department_id INTEGER,
-    FOREIGN KEY (department_id) REFERENCES departments(id)
-);
+-- Create view
+CREATE VIEW active_employees AS
+SELECT id, name, email, department
+FROM employees
+WHERE is_active = TRUE;
 
--- Named foreign key
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100),
-    department_id INTEGER,
-    CONSTRAINT fk_emp_dept FOREIGN KEY (department_id) 
-        REFERENCES departments(id)
-);
+-- Query like a table
+SELECT * FROM active_employees;
+SELECT * FROM active_employees WHERE department = 'Sales';
+SELECT department, COUNT(*) FROM active_employees GROUP BY department;
 
--- With ON DELETE and ON UPDATE actions
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100),
-    department_id INTEGER,
-    FOREIGN KEY (department_id) REFERENCES departments(id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE
-);
+-- Join with other tables/views
+SELECT ae.name, o.order_date, o.total
+FROM active_employees ae
+JOIN orders o ON ae.id = o.employee_id;
 ```
 
-**ON DELETE Options:**
-- `CASCADE` - Delete child rows when parent is deleted
-- `SET NULL` - Set foreign key to NULL when parent is deleted
-- `RESTRICT` - Prevent deletion of parent if children exist (default)
-- `NO ACTION` - Same as RESTRICT
+### View Limitations
 
-**ON UPDATE Options:**
-- `CASCADE` - Update foreign key when parent key changes
-- `SET NULL` - Set foreign key to NULL when parent key changes
-- `RESTRICT` - Prevent update of parent if children exist
-
-**Example:**
+**Views are read-only in most cases:**
 ```sql
--- Departments table
-CREATE TABLE departments (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100)
-);
+-- This usually won't work:
+UPDATE active_employees SET salary = 50000 WHERE id = 1;
 
--- Employees table with foreign key
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100),
-    department_id INTEGER,
-    FOREIGN KEY (department_id) REFERENCES departments(id)
-        ON DELETE SET NULL  -- If department deleted, set to NULL
-        ON UPDATE CASCADE   -- If department ID changes, update here too
-);
+-- Instead, update the underlying table:
+UPDATE employees SET salary = 50000 WHERE id = 1;
 ```
 
-#### UNIQUE Constraint
+**Views don't store data:**
+- Every query on a view runs the underlying SELECT
+- Complex views can be slow
+- Consider materialized views for better performance (not covered today)
 
-Ensures all values in a column (or combination of columns) are unique.
+### Best Practices
 
-```sql
--- Single column unique
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    email VARCHAR(100) UNIQUE,
-    name VARCHAR(100)
-);
+1. **Name views clearly** - Use prefixes like `vw_` or descriptive names
+2. **Document purpose** - Comment what the view is for
+3. **Keep views simple** - Complex views can be slow
+4. **Use for common queries** - Don't create views for one-time queries
+5. **Security** - Use views to hide sensitive columns
+6. **Test performance** - Complex views can impact query speed
 
--- Multiple columns unique together
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    email VARCHAR(100),
-    UNIQUE (first_name, last_name)
-);
+## Exercises (40 minutes)
 
--- Named unique constraint
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    email VARCHAR(100),
-    CONSTRAINT uq_email UNIQUE (email)
-);
-```
-
-**Rules:**
-- Allows NULL values (multiple NULLs allowed)
-- Can have multiple UNIQUE constraints per table
-- Automatically creates an index
-
-#### NOT NULL Constraint
-
-Ensures a column cannot contain NULL values.
-
-```sql
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    phone VARCHAR(20)  -- Can be NULL
-);
-
--- All columns required
-CREATE TABLE products (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    category VARCHAR(50) NOT NULL
-);
-```
-
-#### CHECK Constraint
-
-Validates data based on a condition.
-
-```sql
--- Simple check
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100),
-    salary DECIMAL(10, 2) CHECK (salary > 0),
-    age INTEGER CHECK (age >= 18 AND age <= 100)
-);
-
--- Named check constraint
-CREATE TABLE products (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100),
-    price DECIMAL(10, 2),
-    discount_price DECIMAL(10, 2),
-    CONSTRAINT chk_price CHECK (price > 0),
-    CONSTRAINT chk_discount CHECK (discount_price <= price)
-);
-
--- Complex check
-CREATE TABLE orders (
-    id INTEGER PRIMARY KEY,
-    order_date DATE,
-    ship_date DATE,
-    status VARCHAR(20),
-    CHECK (ship_date >= order_date),
-    CHECK (status IN ('pending', 'shipped', 'delivered', 'cancelled'))
-);
-```
-
-#### DEFAULT Constraint
-
-Provides a default value when none is specified.
-
-```sql
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100),
-    hire_date DATE DEFAULT CURRENT_DATE,
-    is_active BOOLEAN DEFAULT TRUE,
-    status VARCHAR(20) DEFAULT 'active',
-    salary DECIMAL(10, 2) DEFAULT 50000.00
-);
-
--- Insert without specifying defaults
-INSERT INTO employees (id, name)
-VALUES (1, 'John Doe');
--- hire_date, is_active, status, salary will use defaults
-```
-
-#### Complete Example with All Constraints
-
-```sql
--- Departments table
-CREATE TABLE departments (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    location VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Employees table with all constraint types
-CREATE TABLE employees (
-    -- Primary key
-    id INTEGER PRIMARY KEY,
-    
-    -- NOT NULL constraints
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    
-    -- UNIQUE constraint
-    CONSTRAINT uq_email UNIQUE (email),
-    
-    -- CHECK constraints
-    salary DECIMAL(10, 2) CHECK (salary >= 0),
-    age INTEGER CHECK (age >= 18),
-    
-    -- DEFAULT constraints
-    hire_date DATE DEFAULT CURRENT_DATE,
-    is_active BOOLEAN DEFAULT TRUE,
-    status VARCHAR(20) DEFAULT 'active',
-    
-    -- Foreign key
-    department_id INTEGER,
-    CONSTRAINT fk_department FOREIGN KEY (department_id) 
-        REFERENCES departments(id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE,
-    
-    -- Additional checks
-    CHECK (status IN ('active', 'inactive', 'terminated'))
-);
-```
-
-#### Adding Constraints to Existing Tables
-
-```sql
--- Add PRIMARY KEY
-ALTER TABLE employees
-ADD PRIMARY KEY (id);
-
--- Add FOREIGN KEY
-ALTER TABLE employees
-ADD FOREIGN KEY (department_id) REFERENCES departments(id);
-
--- Add UNIQUE
-ALTER TABLE employees
-ADD UNIQUE (email);
-
--- Add CHECK
-ALTER TABLE employees
-ADD CHECK (salary > 0);
-
--- Add NOT NULL
-ALTER TABLE employees
-ALTER COLUMN name SET NOT NULL;
-
--- Add DEFAULT
-ALTER TABLE employees
-ALTER COLUMN is_active SET DEFAULT TRUE;
-```
-
-#### Dropping Constraints
-
-```sql
--- Drop constraint by name
-ALTER TABLE employees
-DROP CONSTRAINT fk_emp_dept;
-
--- Drop primary key
-ALTER TABLE employees
-DROP PRIMARY KEY;
-
--- Drop NOT NULL
-ALTER TABLE employees
-ALTER COLUMN name DROP NOT NULL;
-```
-
-## 💻 Exercises (40 minutes)
-
-### Part 1: Views
-
-1. Create a view showing active employees only
-2. Create a view with employee details including department name (JOIN)
-3. Create a view with department statistics (aggregations)
-4. Create a view that hides sensitive columns (salary, SSN)
-5. Use CREATE OR REPLACE to update an existing view
-6. Query views like regular tables
-7. Drop a view using DROP VIEW IF EXISTS
-
-### Part 2: PRIMARY KEY
-
-1. Create a table with single column PRIMARY KEY
-2. Create a table with composite PRIMARY KEY (two columns)
-3. Create a table with named PRIMARY KEY constraint
-4. Try to insert duplicate primary keys (observe error)
-5. Try to insert NULL into primary key (observe error)
-
-### Part 3: FOREIGN KEY
-
-1. Create two tables with FOREIGN KEY relationship
-2. Create FOREIGN KEY with ON DELETE CASCADE
-3. Create FOREIGN KEY with ON DELETE SET NULL
-4. Test foreign key by trying to insert invalid reference
-5. Test ON DELETE CASCADE by deleting parent record
-6. Create multiple foreign keys in one table
-
-### Part 4: UNIQUE Constraint
-
-1. Create table with UNIQUE constraint on email
-2. Create UNIQUE constraint on multiple columns together
-3. Try to insert duplicate values (observe error)
-4. Insert multiple NULL values (should work)
-
-### Part 5: NOT NULL Constraint
-
-1. Create table with NOT NULL columns
-2. Try to insert NULL into NOT NULL column (observe error)
-3. Add NOT NULL to existing column
-4. Remove NOT NULL from column
-
-### Part 6: CHECK Constraint
-
-1. Create table with CHECK constraint on salary (> 0)
-2. Create CHECK constraint on age range (18-100)
-3. Create CHECK constraint on status (must be in list)
-4. Create CHECK comparing two columns (end_date >= start_date)
-5. Try to insert invalid data (observe error)
-
-### Part 7: DEFAULT Constraint
-
-1. Create table with DEFAULT values
-2. Insert row without specifying default columns
-3. Verify defaults were applied
-4. Override default by specifying value
-
-### Part 8: Complete Schema
-
-1. Create a complete database schema with:
-   - Departments table (PRIMARY KEY, UNIQUE)
-   - Employees table (PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, CHECK, DEFAULT)
-   - Projects table (PRIMARY KEY, FOREIGN KEY, CHECK)
-2. Test all constraints by trying to violate them
-3. Insert valid data into all tables
-4. Create views on top of the schema
-
-## Setup
-Run the setup script first:
+### Setup
 ```bash
 python setup.py
 ```
 
-This creates the database with sample data.
+Creates `day27.db` with:
+- **employees** (15 rows): id, name, email, department, salary, is_active, hire_date
+- **departments** (5 rows): id, name, location
+- **orders** (30 rows): id, customer_id, order_date, total, status
+- **customers** (10 rows): id, name, email, city
+- **products** (20 rows): id, product_name, category, price
+- **order_items** (60 rows): id, order_id, product_id, quantity, price
 
-## 💡 Key Concepts
+### Instructions
 
-### Views Summary
+Complete 20 exercises in `exercise.sql`:
 
-**Benefits:**
-- Simplify complex queries
-- Provide security/access control
-- Abstract data presentation
-- Reusable query logic
+**Part 1: Basic Views (1-5)** - Simple CREATE VIEW  
+**Part 2: Views with JOINs (6-10)** - Multi-table views  
+**Part 3: Aggregate Views (11-15)** - Views with GROUP BY  
+**Part 4: Practical Views (16-20)** - Real-world scenarios
 
-**Commands:**
-- `CREATE VIEW` - Create new view
-- `CREATE OR REPLACE VIEW` - Update or create view
-- `DROP VIEW` - Remove view
-
-### Constraints Summary
-
-| Constraint | Purpose | Rules |
-|------------|---------|-------|
-| PRIMARY KEY | Unique identifier | Unique, NOT NULL, one per table |
-| FOREIGN KEY | Referential integrity | References another table's PK |
-| UNIQUE | Unique values | Allows NULL, multiple per table |
-| NOT NULL | Required values | Cannot be NULL |
-| CHECK | Value validation | Custom condition |
-| DEFAULT | Default value | Used when not specified |
-
-### Foreign Key Actions
-
-| Action | Effect |
-|--------|--------|
-| CASCADE | Propagate change to child rows |
-| SET NULL | Set child foreign key to NULL |
-| RESTRICT | Prevent change if children exist |
-| NO ACTION | Same as RESTRICT (default) |
-
-### Best Practices
-
-**Views:**
-- Use views to simplify frequently used complex queries
-- Create views for security (hide sensitive columns)
-- Name views clearly (e.g., `vw_active_employees`)
-- Don't overuse views (can impact performance)
-- Document view purpose and dependencies
-
-**Constraints:**
-- Always use PRIMARY KEY for tables
-- Use FOREIGN KEY to maintain referential integrity
-- Use NOT NULL for required fields
-- Use CHECK for business rules
-- Use UNIQUE for natural keys (email, username)
-- Use DEFAULT for common values
-- Name constraints for easier management
-
-### Common Patterns
-
-```sql
--- Pattern 1: Security view
-CREATE VIEW public_employees AS
-SELECT id, name, department, hire_date
-FROM employees;
--- Hides salary, SSN, etc.
-
--- Pattern 2: Simplified reporting view
-CREATE VIEW sales_summary AS
-SELECT 
-    DATE(order_date) as date,
-    COUNT(*) as orders,
-    SUM(total) as revenue
-FROM orders
-GROUP BY DATE(order_date);
-
--- Pattern 3: Complete table with constraints
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    salary DECIMAL(10, 2) CHECK (salary > 0),
-    department_id INTEGER,
-    hire_date DATE DEFAULT CURRENT_DATE,
-    is_active BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (department_id) REFERENCES departments(id)
-);
-```
-
-### Common Mistakes
-
-```sql
--- ❌ Wrong - No PRIMARY KEY
-CREATE TABLE employees (
-    id INTEGER,
-    name VARCHAR(100)
-);
-
--- ✅ Correct - With PRIMARY KEY
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100)
-);
-
--- ❌ Wrong - Foreign key to non-existent table
-CREATE TABLE employees (
-    department_id INTEGER,
-    FOREIGN KEY (department_id) REFERENCES departments(id)
-);
--- Must create departments table first!
-
--- ✅ Correct - Create parent table first
-CREATE TABLE departments (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100)
-);
-
-CREATE TABLE employees (
-    id INTEGER PRIMARY KEY,
-    department_id INTEGER,
-    FOREIGN KEY (department_id) REFERENCES departments(id)
-);
-
--- ❌ Wrong - CHECK with wrong syntax
-CHECK salary > 0  -- Missing parentheses
-
--- ✅ Correct
-CHECK (salary > 0)
-```
+Check `solution.sql` for complete solutions.
 
 ## Key Takeaways
-- Views are virtual tables based on queries
-- Use views to simplify complex queries and control access
-- PRIMARY KEY uniquely identifies rows (required for most tables)
-- FOREIGN KEY maintains relationships between tables
-- UNIQUE ensures no duplicate values
-- NOT NULL requires values (no NULLs allowed)
-- CHECK validates data against conditions
-- DEFAULT provides values when not specified
-- Constraints enforce data integrity and business rules
-- Always create parent tables before child tables with foreign keys
+
+- Views are virtual tables based on SELECT queries
+- Use CREATE VIEW to save complex queries
+- Query views just like regular tables
+- Views simplify complex queries and improve reusability
+- Use views for security (hide sensitive columns)
+- Use CREATE OR REPLACE VIEW to update views
+- Use DROP VIEW to remove views
+- Views don't store data - they run the query each time
+- Name views clearly and document their purpose
+- Test view performance with complex queries
 
 ## Resources
-- [DuckDB Documentation](https://duckdb.org/docs/)
-- [SQL Tutorial](https://www.sqltutorial.org/)
-- [DuckDB SQL Reference](https://duckdb.org/docs/sql/introduction)
+- [DuckDB Views Documentation](https://duckdb.org/docs/sql/statements/create_view)
+- [SQL Views Tutorial](https://www.sqltutorial.org/sql-views/)
 
 ## Next Steps
 - Complete the exercises
-- Check your solution
+- Check your solutions
 - Take the quiz in `quiz.md`
-- Move to Day 28
+- Move to Day 28: Data Modeling
