@@ -1,191 +1,95 @@
-# Day 21: String Functions and Data Types
+# Day 21: String Functions
 
-## Learning Objectives
-- Understand string functions
-- Learn CONCAT, UPPER, LOWER, SUBSTRING, LENGTH
-- Understand SQL data types
+## 📖 Learning Objectives
+
+By the end of today, you will:
+- Master string manipulation functions (CONCAT, UPPER, LOWER, SUBSTRING, LENGTH)
+- Understand SQL data types (numeric, string, date, boolean)
 - Learn type conversion with CAST
-- Practice with real queries
-- Build practical SQL skills
+- Clean and format text data
+- Build practical data transformation queries
 
-## Theory (15 minutes)
+---
 
-### Part 1: String Functions
+## 📚 Theory (15 minutes)
 
-#### CONCAT - Combine Strings
+### String Functions
 
+**CONCAT - Combine Strings**
 ```sql
--- Combine first and last name
-SELECT CONCAT(first_name, ' ', last_name) as full_name
-FROM employees;
-
--- Combine multiple columns
-SELECT CONCAT(city, ', ', state, ' ', zip_code) as full_address
-FROM addresses;
-
+SELECT CONCAT(first_name, ' ', last_name) as full_name FROM employees;
 -- Alternative: || operator
-SELECT first_name || ' ' || last_name as full_name
-FROM employees;
+SELECT first_name || ' ' || last_name as full_name FROM employees;
 ```
 
-#### UPPER and LOWER - Change Case
-
+**UPPER / LOWER - Change Case**
 ```sql
--- Convert to uppercase
-SELECT UPPER(name) as name_upper
-FROM employees;
-
--- Convert to lowercase
-SELECT LOWER(email) as email_lower
-FROM employees;
-
--- Mixed case for formatting
-SELECT 
-    UPPER(SUBSTRING(first_name, 1, 1)) || LOWER(SUBSTRING(first_name, 2)) as proper_case
-FROM employees;
+SELECT UPPER(name) as name_upper, LOWER(email) as email_lower FROM employees;
 ```
 
-#### SUBSTRING - Extract Part of String
-
+**SUBSTRING - Extract Part of String**
 ```sql
 -- Extract first 3 characters
-SELECT SUBSTRING(name, 1, 3) as name_prefix
-FROM employees;
+SELECT SUBSTRING(name, 1, 3) as prefix FROM employees;
 
--- Extract from position to end
-SELECT SUBSTRING(email, 1, POSITION('@' IN email) - 1) as username
-FROM employees;
-
--- Get file extension
-SELECT SUBSTRING(filename, LENGTH(filename) - 2) as extension
-FROM files;
+-- Extract username from email (before @)
+SELECT SUBSTRING(email, 1, POSITION('@' IN email) - 1) as username FROM employees;
 ```
 
-#### LENGTH - Get String Length
-
+**LENGTH - Get String Length**
 ```sql
--- Count characters
-SELECT name, LENGTH(name) as name_length
-FROM employees;
-
--- Find long descriptions
-SELECT *
-FROM products
-WHERE LENGTH(description) > 100;
+SELECT name, LENGTH(name) as name_length FROM employees;
 ```
 
-#### Other Useful String Functions
-
+**TRIM - Remove Whitespace**
 ```sql
--- TRIM - Remove spaces
-SELECT TRIM(name) as trimmed_name
-FROM employees;
-
--- REPLACE - Replace text
-SELECT REPLACE(phone, '-', '') as phone_no_dashes
-FROM employees;
-
--- POSITION - Find substring position
-SELECT POSITION('@' IN email) as at_position
-FROM employees;
-
--- LEFT and RIGHT - Extract from ends
-SELECT 
-    LEFT(code, 3) as prefix,
-    RIGHT(code, 2) as suffix
-FROM products;
+SELECT TRIM(name) as trimmed_name FROM employees;
 ```
 
-### Part 2: SQL Data Types
-
-#### Numeric Data Types
-
+**REPLACE - Replace Text**
 ```sql
--- Integer types
-TINYINT     -- -128 to 127
-SMALLINT    -- -32,768 to 32,767
-INTEGER     -- -2,147,483,648 to 2,147,483,647
-BIGINT      -- Very large integers
-
--- Decimal types
-DECIMAL(10, 2)  -- 10 digits total, 2 after decimal
-NUMERIC(10, 2)  -- Same as DECIMAL
-FLOAT           -- Floating point
-DOUBLE          -- Double precision floating point
-
--- Example usage
-CREATE TABLE products (
-    id INTEGER,
-    price DECIMAL(10, 2),
-    weight FLOAT
-);
+SELECT REPLACE(phone, '-', '') as phone_no_dashes FROM employees;
 ```
 
-#### String Data Types
-
+**POSITION - Find Substring**
 ```sql
--- Variable length
-VARCHAR(100)    -- Up to 100 characters
-TEXT            -- No limit
-
--- Fixed length
-CHAR(5)         -- Always 5 characters (padded)
-
--- Example usage
-CREATE TABLE employees (
-    id INTEGER,
-    name VARCHAR(100),
-    code CHAR(5),
-    bio TEXT
-);
+SELECT POSITION('@' IN email) as at_position FROM employees;
 ```
 
-#### Date and Time Types
-
+**LEFT / RIGHT - Extract from Ends**
 ```sql
-DATE            -- Date only (YYYY-MM-DD)
-TIME            -- Time only (HH:MM:SS)
-TIMESTAMP       -- Date and time
-INTERVAL        -- Duration
-
--- Example usage
-CREATE TABLE events (
-    id INTEGER,
-    event_date DATE,
-    event_time TIME,
-    created_at TIMESTAMP,
-    duration INTERVAL
-);
+SELECT LEFT(code, 3) as prefix, RIGHT(code, 2) as suffix FROM products;
 ```
 
-#### Boolean Type
+### SQL Data Types
 
-```sql
-BOOLEAN         -- TRUE, FALSE, or NULL
+**Numeric Types:**
+- `INTEGER` - Whole numbers
+- `BIGINT` - Large integers
+- `DECIMAL(10, 2)` - Fixed precision (10 digits, 2 after decimal)
+- `FLOAT` / `DOUBLE` - Floating point
 
--- Example usage
-CREATE TABLE users (
-    id INTEGER,
-    is_active BOOLEAN,
-    is_verified BOOLEAN
-);
-```
+**String Types:**
+- `VARCHAR(100)` - Variable length, max 100 characters
+- `TEXT` - No length limit
+- `CHAR(5)` - Fixed length, always 5 characters
 
-#### Other Types
+**Date/Time Types:**
+- `DATE` - Date only (YYYY-MM-DD)
+- `TIME` - Time only (HH:MM:SS)
+- `TIMESTAMP` - Date and time
+- `INTERVAL` - Duration
 
-```sql
-JSON            -- JSON data
-ARRAY           -- Arrays
-BLOB            -- Binary data
-```
+**Other Types:**
+- `BOOLEAN` - TRUE/FALSE
+- `JSON` - JSON data
 
-### Part 3: Type Conversion (CAST)
-
-#### CAST Function
+### Type Conversion (CAST)
 
 ```sql
 -- String to integer
 SELECT CAST('123' AS INTEGER);
+SELECT '123'::INTEGER;  -- Shorthand
 
 -- Integer to string
 SELECT CAST(123 AS VARCHAR);
@@ -197,136 +101,129 @@ SELECT CAST('2024-01-15' AS DATE);
 SELECT CAST(123.45 AS INTEGER);  -- Returns 123
 ```
 
-#### :: Operator (DuckDB/PostgreSQL Style)
+---
 
+## 🎯 Real-World Use Cases
+
+### Data Cleaning
 ```sql
--- Shorter syntax, same as CAST
-SELECT '123'::INTEGER;
-SELECT 123::VARCHAR;
-SELECT '2024-01-15'::DATE;
-SELECT 123.45::INTEGER;
+-- Standardize emails to lowercase
+SELECT LOWER(TRIM(email)) as clean_email FROM users;
+
+-- Extract area code from phone
+SELECT SUBSTRING(phone, 1, 3) as area_code FROM contacts;
+
+-- Remove special characters
+SELECT REPLACE(REPLACE(phone, '-', ''), ' ', '') as clean_phone FROM contacts;
 ```
 
-#### Practical Type Conversion Examples
-
+### Data Formatting
 ```sql
--- Convert price string to number for calculation
-SELECT 
-    product_name,
-    price_string,
-    CAST(price_string AS DECIMAL(10,2)) * 1.1 as price_with_tax
-FROM products;
+-- Create display names
+SELECT CONCAT(UPPER(SUBSTRING(first_name, 1, 1)), LOWER(SUBSTRING(first_name, 2)), ' ', last_name) as display_name
+FROM employees;
 
--- Extract year from date
-SELECT 
-    order_date,
-    CAST(EXTRACT(YEAR FROM order_date) AS INTEGER) as order_year
-FROM orders;
-
--- Convert boolean to text
-SELECT 
-    name,
-    CASE 
-        WHEN is_active THEN 'Active'
-        ELSE 'Inactive'
-    END as status
-FROM users;
-
--- Handle type mismatches
-SELECT 
-    id,
-    CAST(id AS VARCHAR) || '-' || code as full_code
-FROM products;
+-- Format addresses
+SELECT CONCAT(street, ', ', city, ', ', state, ' ', zip_code) as full_address FROM addresses;
 ```
 
-## 💻 Exercises (40 minutes)
+### Data Validation
+```sql
+-- Find invalid emails (no @)
+SELECT * FROM users WHERE POSITION('@' IN email) = 0;
 
-### Part 1: String Functions
+-- Find short passwords
+SELECT * FROM users WHERE LENGTH(password) < 8;
+```
 
-1. Use CONCAT to create full names from first_name and last_name
-2. Convert all emails to lowercase
-3. Extract username from email (part before @)
-4. Find employees with names longer than 10 characters
-5. Replace all spaces in phone numbers with dashes
-6. Extract first 3 characters of product codes
-7. Trim whitespace from all names
-8. Find position of '@' in email addresses
+---
 
-### Part 2: Data Types
+## 💻 Hands-On Exercises (40 min)
 
-1. Create a table with appropriate data types for:
-   - Employee ID (integer)
-   - Name (variable string, max 100)
-   - Salary (decimal with 2 decimal places)
-   - Hire date (date)
-   - Is active (boolean)
+### Setup
 
-2. Create a products table with:
-   - ID, name, description, price, quantity, category
-
-3. Identify appropriate data types for:
-   - Phone numbers
-   - Email addresses
-   - Product prices
-   - Dates of birth
-   - Yes/No flags
-
-### Part 3: Type Conversion
-
-1. Convert string '12345' to integer and add 100
-2. Convert integer 2024 to string and concatenate with '-01-01'
-3. Convert string '2024-01-15' to DATE type
-4. Convert decimal 123.456 to integer (observe truncation)
-5. Convert price strings to decimals and calculate 10% tax
-6. Extract year from date and convert to integer
-7. Convert boolean flags to 'Yes'/'No' text
-
-## Setup
-Run the setup script first:
 ```bash
 python setup.py
 ```
 
-This creates the database with sample data.
+Tables: `employees`, `customers`, `products`
 
-## 💡 Key Concepts
+### Exercises
 
-### String Functions Summary
-- CONCAT / || - Combine strings
-- UPPER / LOWER - Change case
-- SUBSTRING - Extract part of string
-- LENGTH - Get string length
-- TRIM - Remove whitespace
-- REPLACE - Replace text
-- POSITION - Find substring location
+Complete 20 exercises in `exercise.sql`:
 
-### Data Types Summary
-- **Numeric**: INTEGER, BIGINT, DECIMAL, FLOAT, DOUBLE
-- **String**: VARCHAR, TEXT, CHAR
-- **Date/Time**: DATE, TIME, TIMESTAMP, INTERVAL
-- **Boolean**: BOOLEAN (TRUE/FALSE)
-- **Other**: JSON, ARRAY, BLOB
+1. **Basic String Functions** (10 min) - CONCAT, UPPER, LOWER, SUBSTRING, LENGTH
+2. **String Manipulation** (10 min) - TRIM, REPLACE, POSITION, LEFT, RIGHT
+3. **Data Cleaning** (10 min) - Clean emails, phones, names
+4. **Type Conversion** (5 min) - CAST between types
+5. **Advanced Patterns** (5 min) - Complex string transformations
 
-### Type Conversion
-- Use CAST(value AS type) or value::type
-- Important for calculations and comparisons
-- Be aware of truncation (decimal to integer)
-- Handle type mismatches in data imports
+---
 
-## Key Takeaways
-- String functions manipulate and format text data
-- Choose appropriate data types for each column
-- Use CAST or :: for type conversion
-- Understanding data types prevents errors and improves performance
-- Type conversion is essential for data cleaning and transformation
+## 💡 Key Patterns & Best Practices
 
-## Resources
-- [DuckDB Documentation](https://duckdb.org/docs/)
-- [SQL Tutorial](https://www.sqltutorial.org/)
-- [DuckDB SQL Reference](https://duckdb.org/docs/sql/introduction)
+### Common Patterns
 
-## Next Steps
-- Complete the exercises
-- Check your solution
-- Take the quiz in `quiz.md`
-- Move to Day 22
+**Extract username from email:**
+```sql
+SUBSTRING(email, 1, POSITION('@' IN email) - 1)
+```
+
+**Proper case (capitalize first letter):**
+```sql
+UPPER(SUBSTRING(name, 1, 1)) || LOWER(SUBSTRING(name, 2))
+```
+
+**Clean phone numbers:**
+```sql
+REPLACE(REPLACE(REPLACE(phone, '-', ''), ' ', ''), '(', '')
+```
+
+**Full name:**
+```sql
+CONCAT(first_name, ' ', last_name)
+-- or
+first_name || ' ' || last_name
+```
+
+### Best Practices
+
+1. **Use appropriate data types** - VARCHAR for variable text, INTEGER for whole numbers
+2. **Standardize text** - Use LOWER() for case-insensitive comparisons
+3. **Trim whitespace** - Always TRIM() user input
+4. **Validate data** - Check LENGTH(), POSITION() for required patterns
+5. **Use CAST explicitly** - Makes type conversions clear
+
+### Common Mistakes
+
+❌ **Not handling NULL:**
+```sql
+CONCAT(first_name, ' ', last_name)  -- NULL if either is NULL
+```
+
+✅ **Handle NULL:**
+```sql
+CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, ''))
+```
+
+❌ **Wrong SUBSTRING indices:**
+```sql
+SUBSTRING(text, 0, 3)  -- SQL uses 1-based indexing!
+```
+
+✅ **Correct indices:**
+```sql
+SUBSTRING(text, 1, 3)  -- Start at position 1
+```
+
+---
+
+## ✅ Quiz
+
+Test your knowledge in `quiz.md`!
+
+---
+
+## 🚀 Next Steps
+
+Tomorrow: NULL Handling - Working with missing data.
