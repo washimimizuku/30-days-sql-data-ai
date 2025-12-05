@@ -1,0 +1,12 @@
+-- Day 20: Window Functions Advanced - Solutions
+
+-- Exercise 1 Solution
+-- Example solution here
+
+
+-- Exercise 2 Solution
+-- Example solution here
+
+
+-- Exercise 3 Solution
+-- Example solution here

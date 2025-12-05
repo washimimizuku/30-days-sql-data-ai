@@ -1,0 +1,12 @@
+# 30 Days of SQL for Data and AI - Requirements
+
+# Core Requirements
+duckdb>=0.9.0        # Main database engine
+
+# Data Processing (for setup scripts)
+pandas>=2.0.0        # Data manipulation
+faker>=20.0.0        # Generate sample data
+
+# Optional but Recommended
+jupyter>=1.0.0       # Interactive SQL notebooks
+matplotlib>=3.7.0    # Visualize query results
