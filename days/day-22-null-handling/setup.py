@@ -109,7 +109,7 @@ def setup():
     print("  - products (10 rows) - with NULL descriptions, prices, stock, suppliers")
     print("  - orders (10 rows) - with NULL ship dates and amounts")
     print("\n💡 Perfect for practicing NULL handling and data manipulation!")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

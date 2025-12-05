@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Helper script to run SQL files with DuckDB
-Usage: python run_sql.py <database.db> <query.sql>
+Usage: python tools/run_sql.py <database.db> <query.sql>
 """
 
 import sys
@@ -9,9 +9,9 @@ import duckdb
 
 def main():
     if len(sys.argv) != 3:
-        print("Usage: python run_sql.py <database.db> <query.sql>")
+        print("Usage: python tools/run_sql.py <database.db> <query.sql>")
         print("\nExample:")
-        print("  python run_sql.py day01.db exercise.sql")
+        print("  python tools/run_sql.py data/databases/day01.db days/day-01-setup-select-basics/exercise.sql")
         sys.exit(1)
     
     db_file = sys.argv[1]

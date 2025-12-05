@@ -147,7 +147,7 @@ def setup():
     print(f"  - orders ({len(orders_data)} rows) - spanning 2 years with timestamps")
     print("  - employees (10 rows) - with hire dates")
     print("  - events (8 rows) - with start and end dates")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

@@ -303,7 +303,7 @@ def setup():
     print("   - dim_customer (200 customers)")
     print("   - dim_product (128 products across 4 categories)")
     print("   - dim_store (25 stores across 5 regions)")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
     print("\n🎯 You'll learn to:")
     print("   - Design star schemas")
     print("   - Query fact and dimension tables")

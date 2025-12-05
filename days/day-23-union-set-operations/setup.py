@@ -146,7 +146,7 @@ def setup():
     print("  - products_online (5 rows), products_store (5 rows) - with 2 overlapping")
     print("  - orders_q1 (3 rows), orders_q2 (3 rows)")
     print("\n💡 Perfect for practicing UNION, INTERSECT, EXCEPT!")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

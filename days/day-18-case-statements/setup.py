@@ -216,7 +216,7 @@ def setup():
     print("  - customers (8 rows) - various activity levels")
     print(f"  - orders ({len(orders_data)} rows) - with different statuses")
     print(f"  - order_items ({len(items_data)} rows) - order details")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

@@ -157,7 +157,7 @@ def setup():
     print("  - products (15 rows) - across 3 categories")
     print("  - sales (30 rows) - 6 salespeople across 2 regions")
     print("  - orders (15 rows) - with gaps in order_id for gap detection")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

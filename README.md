@@ -134,6 +134,7 @@ You'll be ready for:
 │
 ├── tools/                 # 🛠️ Utilities
 │   ├── cheatsheet.md      # SQL quick reference
+│   ├── run_sql.py         # Helper script to run SQL files
 │   └── test_setup.py      # Verify installation
 │
 ├── data/                  # 📊 Data files

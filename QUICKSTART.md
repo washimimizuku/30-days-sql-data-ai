@@ -112,7 +112,7 @@ cat README.md  # or open in your editor
 code exercise.sql  # or use any text editor
 
 # Test your queries using the helper script (easiest!)
-python ../../run_sql.py ../../data/databases/day01.db exercise.sql
+python ../../tools/run_sql.py ../../data/databases/day01.db exercise.sql
 
 # Or use Python directly
 python -c "import duckdb; conn = duckdb.connect('../../data/databases/day01.db'); conn.execute(open('exercise.sql').read())"
@@ -134,7 +134,7 @@ python
 cat solution.sql
 
 # Run solution using the helper script
-python ../../run_sql.py ../../data/databases/day01.db solution.sql
+python ../../tools/run_sql.py ../../data/databases/day01.db solution.sql
 ```
 
 ### Step 5: Take Quiz (5 min)
@@ -152,7 +152,6 @@ cat quiz.md
 ├── README.md              # Overview
 ├── CURRICULUM.md          # Full curriculum
 ├── QUICKSTART.md          # This file
-├── run_sql.py            # Helper script to run SQL files
 ├── venv/                 # Virtual environment (created by you)
 ├── data/
 │   └── databases/        # All DuckDB databases stored here
@@ -204,7 +203,7 @@ python
 
 ```bash
 # Method 1: Use the provided helper script (easiest!)
-python ../../run_sql.py ../../data/databases/day01.db exercise.sql
+python ../../tools/run_sql.py ../../data/databases/day01.db exercise.sql
 
 # Method 2: One-liner
 python -c "import duckdb; conn = duckdb.connect('../../data/databases/day01.db'); conn.execute(open('exercise.sql').read())"
@@ -592,10 +591,10 @@ python setup.py
 
 # 4. Work on exercises
 # Edit exercise.sql, then test:
-python ../../run_sql.py ../../data/databases/dayXX.db exercise.sql
+python ../../tools/run_sql.py ../../data/databases/dayXX.db exercise.sql
 
 # 5. Check solution
-python ../../run_sql.py ../../data/databases/dayXX.db solution.sql
+python ../../tools/run_sql.py ../../data/databases/dayXX.db solution.sql
 ```
 
 ### Quick Python DuckDB Commands

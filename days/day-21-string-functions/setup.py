@@ -117,7 +117,7 @@ def setup():
     print("  - customers (10 rows) - with formatting variations in names and contacts")
     print("  - products (15 rows) - with product codes, SKUs, and descriptions")
     print("\n💡 Perfect for practicing string functions and data cleaning!")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

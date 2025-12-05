@@ -402,7 +402,7 @@ def setup():
     print("   - orders (2,000 orders)")
     print("   - order_items (6,000+ line items)")
     print("   - reviews (500 product reviews)")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
     print("\n🎓 This capstone project tests ALL skills from Days 1-29:")
     print("   ✓ SELECT, WHERE, ORDER BY (Days 1-3)")
     print("   ✓ Aggregations & GROUP BY (Days 4-7)")

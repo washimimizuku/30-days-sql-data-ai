@@ -239,7 +239,7 @@ def setup():
     print(f"  - dim_product (200 rows) - 5 categories, 20 subcategories")
     print(f"  - dim_store (20 rows) - 5 regions")
     print(f"  - fact_sales ({len(sales_data)} rows) - sales transactions")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

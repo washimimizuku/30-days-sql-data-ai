@@ -277,7 +277,7 @@ Complete all exercises in `exercise.sql`:
 
 ```bash
 # From days/day-28-data-modeling/
-python ../../run_sql.py ../../data/databases/day28.db exercise.sql
+python ../../tools/run_sql.py ../../data/databases/day28.db exercise.sql
 ```
 
 ---

@@ -155,7 +155,7 @@ def setup():
     print("  - orders (29 rows) - customer orders with varying patterns")
     print("  - customers (5 rows) - customer information")
     print("  - stock_prices (180 rows) - 2 stocks, 90 days each")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

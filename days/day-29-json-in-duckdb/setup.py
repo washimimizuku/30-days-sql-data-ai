@@ -228,7 +228,7 @@ def setup():
     print(f"\n✅ Database setup complete for Day 29!")
     print(f"📁 Database location: {db_path}")
     print(f"📁 JSON files location: {raw_data_path}")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
     print("\n🎯 You'll learn to:")
     print("   - Read JSON files with read_json_auto()")
     print("   - Extract nested JSON values")

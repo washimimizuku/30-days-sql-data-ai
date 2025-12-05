@@ -201,7 +201,7 @@ def setup():
     print("   - employees (100 rows) - Various departments, salaries, cities")
     print("   - products (60 rows) - Multiple categories with prices")
     print("   - customers (80 rows) - Different countries and cities")
-    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
+    print(f"\n💡 Run queries with: python ../../tools/run_sql.py {db_path} exercise.sql")
     print("\n🎯 Practice filtering with:")
     print("   - WHERE with comparison operators")
     print("   - AND, OR, NOT logical operators")
