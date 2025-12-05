@@ -3,9 +3,14 @@
 
 import duckdb
 from datetime import date, timedelta
+from pathlib import Path
 
 def setup():
-    conn = duckdb.connect('day16.db')
+    # Create database in data/databases folder
+    db_path = Path(__file__).parent.parent.parent / 'data' / 'databases' / 'day16.db'
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    conn = duckdb.connect(str(db_path))
     
     # Drop existing tables
     conn.execute("DROP TABLE IF EXISTS employees")
@@ -146,12 +151,13 @@ def setup():
     conn.close()
     
     print("✅ Database setup complete for Day 16!")
+    print(f"\n📁 Database location: {db_path}")
     print("\nTables created:")
     print("  - employees (18 rows) - with duplicate salaries for ranking")
     print("  - products (15 rows) - across 3 categories")
     print("  - sales (30 rows) - 6 salespeople across 2 regions")
     print("  - orders (15 rows) - with gaps in order_id for gap detection")
-    print("\nRun your queries with: duckdb day16.db < exercise.sql")
+    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

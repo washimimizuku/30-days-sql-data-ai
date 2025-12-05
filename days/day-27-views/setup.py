@@ -2,9 +2,18 @@
 """Setup script for Day 27: Constraints"""
 
 import duckdb
+from pathlib import Path
 
 def setup():
-    conn = duckdb.connect('day27.db')
+    # Create database in data/databases folder
+
+    db_path = Path(__file__).parent.parent.parent / "data" / "databases" / "day27.db"
+
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+
+    
+
+    conn = duckdb.connect(str(db_path))
     
     conn.execute("""
         CREATE TABLE IF NOT EXISTS sample_data (
@@ -23,7 +32,8 @@ def setup():
     """)
     
     conn.close()
-    print("Database setup complete for Day 27")
+    print("✅ Database setup complete for Day 27")
+    print(f"\n📁 Database location: {db_path}")
 
 if __name__ == "__main__":
     setup()

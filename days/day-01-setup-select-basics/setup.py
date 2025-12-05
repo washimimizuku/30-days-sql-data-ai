@@ -5,12 +5,21 @@ Creates sample database with employees table
 """
 
 import duckdb
+from pathlib import Path
 
 def setup():
     """Create database and populate with sample data"""
     
     # Connect to database
-    conn = duckdb.connect('day01.db')
+    # Create database in data/databases folder
+
+    db_path = Path(__file__).parent.parent.parent / "data" / "databases" / "day01.db"
+
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+
+    
+
+    conn = duckdb.connect(str(db_path))
     
     # Create employees table
     conn.execute("""
@@ -46,11 +55,12 @@ def setup():
     
     # Show sample data
     print("\n📊 Sample data:")
-    conn.execute("SELECT * FROM employees LIMIT 3").show()
+    sample = conn.execute("SELECT * FROM employees LIMIT 3").fetchall()
+    for row in sample:
+        print(f"   {row}")
     
     conn.close()
-    print("\n🎉 Setup complete! Run your queries with:")
-    print("   duckdb day01.db < exercise.sql")
+    print(f"\n💡 Run queries with: python ../../run_sql.py {db_path} exercise.sql")
 
 if __name__ == "__main__":
     setup()

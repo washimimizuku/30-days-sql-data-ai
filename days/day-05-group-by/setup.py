@@ -2,9 +2,18 @@
 """Setup script for Day 5: GROUP BY"""
 
 import duckdb
+from pathlib import Path
 
 def setup():
-    conn = duckdb.connect('day05.db')
+    # Create database in data/databases folder
+
+    db_path = Path(__file__).parent.parent.parent / "data" / "databases" / "day05.db"
+
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+
+    
+
+    conn = duckdb.connect(str(db_path))
     
     # Create sample tables
     conn.execute("""
@@ -25,7 +34,8 @@ def setup():
     """)
     
     conn.close()
-    print("Database setup complete for Day 5")
+    print("✅ Database setup complete for Day 05")
+    print(f"\n📁 Database location: {db_path}")
 
 if __name__ == "__main__":
     setup()

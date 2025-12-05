@@ -97,7 +97,7 @@ cd days/day-01-setup-select-basics
 python setup.py
 ```
 
-This creates a DuckDB database with sample data.
+This creates a DuckDB database in `data/databases/` with sample data.
 
 ### Step 2: Read the Lesson (15 min)
 
@@ -111,21 +111,21 @@ cat README.md  # or open in your editor
 # Edit exercise.sql
 code exercise.sql  # or use any text editor
 
-# Test your queries using Python's DuckDB
-python -c "import duckdb; conn = duckdb.connect('day01.db'); conn.execute(open('exercise.sql').read())"
+# Test your queries using the helper script (easiest!)
+python ../../run_sql.py ../../data/databases/day01.db exercise.sql
+
+# Or use Python directly
+python -c "import duckdb; conn = duckdb.connect('../../data/databases/day01.db'); conn.execute(open('exercise.sql').read())"
 
 # Or use interactive Python shell
 python
 >>> import duckdb
->>> conn = duckdb.connect('day01.db')
+>>> conn = duckdb.connect('../../data/databases/day01.db')
 >>> conn.execute("SELECT * FROM employees").fetchall()
 >>> exit()
 ```
 
-**Note:** If you have the DuckDB CLI installed separately, you can also use:
-```bash
-duckdb day01.db < exercise.sql
-```
+**Note:** All databases are stored in `data/databases/` to keep your workspace organized.
 
 ### Step 4: Check Solution (5 min)
 
@@ -133,8 +133,8 @@ duckdb day01.db < exercise.sql
 # Compare with solution
 cat solution.sql
 
-# Run solution using Python's DuckDB
-python -c "import duckdb; conn = duckdb.connect('day01.db'); conn.execute(open('solution.sql').read())"
+# Run solution using the helper script
+python ../../run_sql.py ../../data/databases/day01.db solution.sql
 ```
 
 ### Step 5: Take Quiz (5 min)
@@ -152,11 +152,18 @@ cat quiz.md
 ├── README.md              # Overview
 ├── CURRICULUM.md          # Full curriculum
 ├── QUICKSTART.md          # This file
-├── resources/
+├── run_sql.py            # Helper script to run SQL files
+├── venv/                 # Virtual environment (created by you)
+├── data/
+│   └── databases/        # All DuckDB databases stored here
+│       ├── day01.db
+│       ├── day02.db
+│       └── ...
+├── docs/
 │   ├── SETUP.md          # Detailed setup
-│   └── cheatsheet.md     # SQL quick reference
+│   └── ...
 ├── tools/
-│   └── check_setup.py    # Verify installation
+│   └── test_setup.py     # Verify installation
 └── days/
     ├── day-01-setup-select-basics/
     │   ├── README.md     # Lesson (15 min)
@@ -197,15 +204,15 @@ python
 
 ```bash
 # Method 1: Use the provided helper script (easiest!)
-python run_sql.py day01.db exercise.sql
+python ../../run_sql.py ../../data/databases/day01.db exercise.sql
 
 # Method 2: One-liner
-python -c "import duckdb; conn = duckdb.connect('day01.db'); conn.execute(open('exercise.sql').read())"
+python -c "import duckdb; conn = duckdb.connect('../../data/databases/day01.db'); conn.execute(open('exercise.sql').read())"
 
 # Method 3: Interactive Python
 python
 >>> import duckdb
->>> conn = duckdb.connect('day01.db')
+>>> conn = duckdb.connect('../../data/databases/day01.db')
 >>> conn.execute(open('exercise.sql').read())
 >>> exit()
 ```
@@ -233,7 +240,8 @@ duckdb day01.db < exercise.sql
 ```python
 import duckdb
 
-conn = duckdb.connect('day01.db')
+# Connect to database in data/databases folder
+conn = duckdb.connect('../../data/databases/day01.db')
 
 # Show all tables
 conn.execute("SHOW TABLES").fetchall()
@@ -554,13 +562,13 @@ source venv/bin/activate  # macOS/Linux
 # 2. Navigate to Day 1
 cd days/day-01-setup-select-basics
 
-# 3. Run setup script
+# 3. Run setup script (creates database in data/databases/)
 python setup.py
 
 # 4. Start querying with Python
 python
 >>> import duckdb
->>> conn = duckdb.connect('day01.db')
+>>> conn = duckdb.connect('../../data/databases/day01.db')
 >>> conn.execute("SELECT * FROM employees").fetchall()
 ```
 
@@ -579,15 +587,15 @@ source venv/bin/activate
 # 2. Go to day folder
 cd days/day-XX-topic
 
-# 3. Run setup
+# 3. Run setup (creates database in data/databases/)
 python setup.py
 
 # 4. Work on exercises
 # Edit exercise.sql, then test:
-python ../../run_sql.py dayXX.db exercise.sql
+python ../../run_sql.py ../../data/databases/dayXX.db exercise.sql
 
 # 5. Check solution
-python ../../run_sql.py dayXX.db solution.sql
+python ../../run_sql.py ../../data/databases/dayXX.db solution.sql
 ```
 
 ### Quick Python DuckDB Commands
