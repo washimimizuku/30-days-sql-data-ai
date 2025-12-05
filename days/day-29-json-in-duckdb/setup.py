@@ -202,6 +202,9 @@ def setup():
     print("\n📊 Creating database and loading JSON data...")
     conn = duckdb.connect(str(db_path))
     
+    # Drop existing table if it exists
+    conn.execute("DROP TABLE IF EXISTS json_files")
+    
     # Create a reference table for file locations
     conn.execute("""
         CREATE TABLE json_files (
