@@ -63,6 +63,8 @@ python3 -c "import duckdb; print(f'DuckDB {duckdb.__version__} installed!')"
 python3 tools/test_setup.py
 ```
 
+**Alternative:** Some students prefer the standalone DuckDB CLI. See the [DuckDB CLI section](#using-duckdb-cli-alternative-method) below for installation and usage.
+
 ### 5. Deactivate Virtual Environment (when done)
 
 ```bash
@@ -116,6 +118,9 @@ python3 tools/run_sql.py data/databases/day01.db days/day-01-setup-select-basics
 # Or test with a simple query to verify database works
 python3 -c "import duckdb; conn = duckdb.connect('data/databases/day01.db'); print(conn.execute('SELECT * FROM employees LIMIT 5').fetchall())"
 
+# Alternative: Use DuckDB CLI (if installed)
+duckdb data/databases/day01.db < days/day-01-setup-select-basics/exercise.sql
+
 # Note: exercise.sql contains TODO comments - you write the actual queries
 # The helper script above will show results when you add real SQL queries
 
@@ -140,6 +145,9 @@ cat days/day-01-setup-select-basics/solution.sql
 
 # Run solution using the helper script
 python3 tools/run_sql.py data/databases/day01.db days/day-01-setup-select-basics/solution.sql
+
+# Alternative: Use DuckDB CLI (if installed)
+duckdb data/databases/day01.db < days/day-01-setup-select-basics/solution.sql
 ```
 
 ### Step 5: Take Quiz (5 min)
@@ -221,23 +229,46 @@ python
 >>> exit()
 ```
 
-### Using DuckDB CLI (Optional)
+### Using DuckDB CLI (Alternative Method)
 
-If you have the standalone DuckDB CLI installed:
+**For students who prefer command-line tools**, you can install the standalone DuckDB CLI and run queries directly.
+
+#### Installation
+
+**macOS (Homebrew):**
+```bash
+brew install duckdb
+```
+
+**Linux/macOS (Direct download):**
+```bash
+# Download latest release
+curl -L https://github.com/duckdb/duckdb/releases/latest/download/duckdb_cli-linux-amd64.zip -o duckdb.zip
+unzip duckdb.zip
+sudo mv duckdb /usr/local/bin/
+```
+
+**Windows:**
+Download from [DuckDB releases](https://github.com/duckdb/duckdb/releases) and add to PATH.
+
+#### Usage
 
 ```bash
-# Open database
-duckdb day01.db
+# Run SQL file directly (recommended for exercises)
+duckdb data/databases/day01.db < days/day-01-setup-select-basics/solution.sql
 
-# Run queries interactively
+# Interactive mode
+duckdb data/databases/day01.db
+.mode table
 SELECT * FROM employees;
-
-# Exit
 .quit
 
-# Run SQL file
-duckdb day01.db < exercise.sql
+# One-liner query
+duckdb data/databases/day01.db "SELECT COUNT(*) FROM employees;"
 ```
+
+**Pros:** Fast, direct SQL execution, familiar to SQL users  
+**Cons:** Requires separate installation, less beginner-friendly
 
 ### Useful Commands (Python)
 
