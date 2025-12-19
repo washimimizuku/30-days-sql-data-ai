@@ -276,7 +276,7 @@ duckdb data/databases/day01.db "SELECT COUNT(*) FROM employees;"
 import duckdb
 
 # Connect to database in data/databases folder
-conn = duckdb.connect('../../data/databases/day01.db')
+conn = duckdb.connect('data/databases/day01.db')
 
 # Show all tables
 conn.execute("SHOW TABLES").fetchall()
@@ -594,16 +594,13 @@ FROM employees;
 source venv/bin/activate  # macOS/Linux
 # venv\Scripts\activate   # Windows
 
-# 2. Navigate to Day 1
-cd days/day-01-setup-select-basics
+# 2. Run setup script for Day 1 (creates database in data/databases/)
+python3 days/day-01-setup-select-basics/setup.py
 
-# 3. Run setup script (creates database in data/databases/)
-python setup.py
-
-# 4. Start querying with Python
-python
+# 3. Start querying with Python
+python3
 >>> import duckdb
->>> conn = duckdb.connect('../../data/databases/day01.db')
+>>> conn = duckdb.connect('data/databases/day01.db')
 >>> conn.execute("SELECT * FROM employees").fetchall()
 ```
 
@@ -623,14 +620,14 @@ source venv/bin/activate
 cd days/day-XX-topic
 
 # 3. Run setup (creates database in data/databases/)
-python setup.py
+python3 setup.py
 
 # 4. Work on exercises
 # Edit exercise.sql, then test:
-python ../../tools/run_sql.py ../../data/databases/dayXX.db exercise.sql
+python3 tools/run_sql.py dayXX.db days/day-01-setup-select-basics/exercise.sql
 
 # 5. Check solution
-python ../../tools/run_sql.py ../../data/databases/dayXX.db solution.sql
+python3 tools/run_sql.py data/databases/dayXX.db days/day-01-setup-select-basics/solution.sql
 ```
 
 ### Quick Python DuckDB Commands
