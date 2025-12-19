@@ -110,14 +110,14 @@ cat README.md  # or open in your editor
 # Edit exercise.sql
 code exercise.sql  # or use any text editor
 
-# Test your queries using the helper script (easiest!)
+# Test your queries using the helper script (easiest - shows results!)
 python3 tools/run_sql.py data/databases/day01.db days/day-01-setup-select-basics/exercise.sql
 
-# Or test individual queries with Python (shows results)
+# Or test with a simple query to verify database works
 python3 -c "import duckdb; conn = duckdb.connect('data/databases/day01.db'); print(conn.execute('SELECT * FROM employees LIMIT 5').fetchall())"
 
-# Or use Python directly (for running exercise.sql file)
-python3 -c "import duckdb; conn = duckdb.connect('data/databases/day01.db'); conn.execute(open('days/day-01-setup-select-basics/exercise.sql').read())"
+# Note: exercise.sql contains TODO comments - you write the actual queries
+# The helper script above will show results when you add real SQL queries
 
 # Or use interactive Python shell
 python3
@@ -136,7 +136,7 @@ python3
 
 ```bash
 # Compare with solution
-cat solution.sql
+cat days/day-01-setup-select-basics/solution.sql
 
 # Run solution using the helper script
 python3 tools/run_sql.py data/databases/day01.db days/day-01-setup-select-basics/solution.sql
@@ -145,7 +145,7 @@ python3 tools/run_sql.py data/databases/day01.db days/day-01-setup-select-basics
 ### Step 5: Take Quiz (5 min)
 
 ```bash
-cat quiz.md
+cat days/day-01-setup-select-basics/quiz.md
 ```
 
 ---
