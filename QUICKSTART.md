@@ -616,18 +616,15 @@ python3
 # 1. Activate venv (if not already active)
 source venv/bin/activate
 
-# 2. Go to day folder
-cd days/day-XX-topic
-
-# 3. Run setup (creates database in data/databases/)
+# 2. Run setup (creates database in data/databases/)
 python3 setup.py
 
-# 4. Work on exercises
+# 3. Work on exercises
 # Edit exercise.sql, then test:
-python3 tools/run_sql.py dayXX.db days/day-01-setup-select-basics/exercise.sql
+python3 tools/run_sql.py data/databases/dayXX.db days/day-XX.../exercise.sql
 
-# 5. Check solution
-python3 tools/run_sql.py data/databases/dayXX.db days/day-01-setup-select-basics/solution.sql
+# 4. Check solution
+python3 tools/run_sql.py data/databases/dayXX.db days/day-XX.../solution.sql
 ```
 
 ### Quick Python DuckDB Commands
