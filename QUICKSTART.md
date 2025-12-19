@@ -43,7 +43,7 @@ venv\Scripts\activate
 
 ```bash
 # Install all required packages
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 # This installs:
 # - duckdb (database engine)
@@ -57,10 +57,10 @@ pip install -r requirements.txt
 
 ```bash
 # Check DuckDB is installed
-python -c "import duckdb; print(f'DuckDB {duckdb.__version__} installed!')"
+python3 -c "import duckdb; print(f'DuckDB {duckdb.__version__} installed!')"
 
 # Or run the test script
-python tools/test_setup.py
+python3 tools/test_setup.py
 ```
 
 ### 5. Deactivate Virtual Environment (when done)
@@ -93,8 +93,7 @@ venv\Scripts\activate     # Windows
 ### Step 1: Setup Database (2 min)
 
 ```bash
-cd days/day-01-setup-select-basics
-python setup.py
+python3 days/day-01-setup-select-basics/setup.py
 ```
 
 This creates a DuckDB database in `data/databases/` with sample data.
@@ -112,20 +111,26 @@ cat README.md  # or open in your editor
 code exercise.sql  # or use any text editor
 
 # Test your queries using the helper script (easiest!)
-python ../../tools/run_sql.py ../../data/databases/day01.db exercise.sql
+python3 tools/run_sql.py data/databases/day01.db days/day-01-setup-select-basics/exercise.sql
 
-# Or use Python directly
-python -c "import duckdb; conn = duckdb.connect('../../data/databases/day01.db'); conn.execute(open('exercise.sql').read())"
+# Or test individual queries with Python (shows results)
+python3 -c "import duckdb; conn = duckdb.connect('data/databases/day01.db'); print(conn.execute('SELECT * FROM employees LIMIT 5').fetchall())"
+
+# Or use Python directly (for running exercise.sql file)
+python3 -c "import duckdb; conn = duckdb.connect('data/databases/day01.db'); conn.execute(open('days/day-01-setup-select-basics/exercise.sql').read())"
 
 # Or use interactive Python shell
-python
+python3
 >>> import duckdb
->>> conn = duckdb.connect('../../data/databases/day01.db')
+>>> conn = duckdb.connect('data/databases/day01.db')
 >>> conn.execute("SELECT * FROM employees").fetchall()
 >>> exit()
 ```
 
-**Note:** All databases are stored in `data/databases/` to keep your workspace organized.
+**Note:** 
+- All databases are stored in `data/databases/` to keep your workspace organized
+- Exercise files contain TODO comments - you need to write the actual SQL queries
+- Use the helper script or interactive Python to test your queries as you write them
 
 ### Step 4: Check Solution (5 min)
 
@@ -134,7 +139,7 @@ python
 cat solution.sql
 
 # Run solution using the helper script
-python ../../tools/run_sql.py ../../data/databases/day01.db solution.sql
+python3 tools/run_sql.py data/databases/day01.db days/day-01-setup-select-basics/solution.sql
 ```
 
 ### Step 5: Take Quiz (5 min)
@@ -205,14 +210,14 @@ python
 # Method 1: Use the provided helper script (easiest!)
 python ../../tools/run_sql.py ../../data/databases/day01.db exercise.sql
 
-# Method 2: One-liner
-python -c "import duckdb; conn = duckdb.connect('../../data/databases/day01.db'); conn.execute(open('exercise.sql').read())"
+# Method 2: One-liner (to see results, use fetchall())
+python -c "import duckdb; conn = duckdb.connect('../../data/databases/day01.db'); print(conn.execute('SELECT * FROM employees LIMIT 5').fetchall())"
 
-# Method 3: Interactive Python
+# Method 3: Interactive Python (best for exploration)
 python
 >>> import duckdb
 >>> conn = duckdb.connect('../../data/databases/day01.db')
->>> conn.execute(open('exercise.sql').read())
+>>> conn.execute("SELECT * FROM employees").fetchall()
 >>> exit()
 ```
 
