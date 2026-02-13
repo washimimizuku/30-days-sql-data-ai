@@ -12,3 +12,4 @@ jupyter>=1.0.0       # Interactive SQL notebooks
 matplotlib>=3.7.0    # Visualize query results
 urllib3>=2.6.3 # not directly required, pinned by Snyk to avoid a vulnerability
 tornado>=6.5.3 # not directly required, pinned by Snyk to avoid a vulnerability
+nbconvert>=7.17.0 # not directly required, pinned by Snyk to avoid a vulnerability
